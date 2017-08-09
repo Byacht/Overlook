@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Overlook</string>
+    <string name="open">drawer_open</string>
+    <string name="close">drawer_close</string>
+</resources>

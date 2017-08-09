@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group>
+        <item
+            android:id="@+id/douyu_tv_menu"
+            android:icon="@mipmap/ic_launcher"
+            app:showAsAction="always"
+            android:title="douyu_tv"
+            android:checkable="true"/>
+        <item
+            android:id="@+id/setting_menu"
+            android:icon="@mipmap/ic_launcher"
+            app:showAsAction="always"
+            android:title="setting"
+            android:checkable="true"/>
+    </group>
+
+</menu>
