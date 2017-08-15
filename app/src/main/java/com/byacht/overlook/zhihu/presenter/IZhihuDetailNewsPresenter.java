@@ -6,4 +6,5 @@ package com.byacht.overlook.zhihu.presenter;
 
 public interface IZhihuDetailNewsPresenter {
     void getZhihuDetailNews(String id);
+
 }

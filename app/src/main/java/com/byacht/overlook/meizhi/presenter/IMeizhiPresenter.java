@@ -5,5 +5,5 @@ package com.byacht.overlook.meizhi.presenter;
  */
 
 public interface IMeizhiPresenter {
-    void getMeizhis();
+    void getMeizhis(int page);
 }

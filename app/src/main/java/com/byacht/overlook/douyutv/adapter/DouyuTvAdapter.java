@@ -42,6 +42,7 @@ public class DouyuTvAdapter extends RecyclerView.Adapter<DouyuTvAdapter.MyViewHo
         TvRoom tvRoom = mTvRooms.get(position);
         Glide.with(mContext)
                 .load(tvRoom.getRoom_src())
+                .override(320, 180)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(holder.mImgDouyuTvRoom);
         holder.mTvDouyuTvOnline.setText(tvRoom.getOnline() + "");

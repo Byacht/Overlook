@@ -1,5 +1,6 @@
 package com.byacht.overlook.meizhi.presenter;
 
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 
@@ -30,43 +31,31 @@ public class MeizhiPresenter implements IMeizhiPresenter {
     }
 
     @Override
-    public void getMeizhis() {
-        Log.d("out", "111");
-        Retrofit retrofit = new Retrofit.Builder()
+    public void getMeizhis(int page) {
+        IMeizhi meizhi = new Retrofit.Builder()
                 .baseUrl("http://gank.io/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build();
+                .build()
+                .create(IMeizhi.class);
 
-        IMeizhi meizhi = retrofit.create(IMeizhi.class);
-//        meizhi.getMeizhis(1)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<Meizhis>() {
-//                    @Override
-//                    public void onCompleted() {
-//                    }
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        Log.d("out", "111:" + e.toString());
-//                    }
-//                    @Override
-//                    public void onNext(Meizhis meizhis) {
-//                        mMeizhiFragment.showMeizhis(meizhis);
-//                        Log.d("out", meizhis.toString());
-//            }
-//        });
-        Call<Meizhis> call = meizhi.getMeiZhi(1);
-        call.enqueue(new Callback<Meizhis>() {
-            @Override
-            public void onResponse(Call<Meizhis> call, Response<Meizhis> response) {
-                mMeizhiFragment.showMeizhis(response.body());
-            }
-
-            @Override
-            public void onFailure(Call<Meizhis> call, Throwable t) {
-                Log.d("out", "fail:" + t.toString());
+        meizhi.getMeizhis(page)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Meizhis>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+                    @Override
+                    public void onError(Throwable e) {
+                        mMeizhiFragment.showError(e.toString());
+                    }
+                    @Override
+                    public void onNext(Meizhis meizhis) {
+                        mMeizhiFragment.showMeizhis(meizhis);
+                        Log.d("out", meizhis.toString());
             }
         });
+
     }
 }

@@ -1,6 +1,7 @@
 package com.byacht.overlook.zhihu.presenter;
 
 import com.byacht.overlook.zhihu.IZhihu;
+import com.byacht.overlook.zhihu.activity.IZhihuDetailNewsActivity;
 import com.byacht.overlook.zhihu.activity.ZhihuDetailNewsActivity;
 import com.byacht.overlook.zhihu.entity.ZhihuDetailNews;
 
@@ -16,9 +17,9 @@ import rx.schedulers.Schedulers;
  */
 
 public class ZhihuDetailNewsPresenter implements IZhihuDetailNewsPresenter {
-    private ZhihuDetailNewsActivity mZhihuDetailNewsActivity;
+    private IZhihuDetailNewsActivity mZhihuDetailNewsActivity;
 
-    public ZhihuDetailNewsPresenter(ZhihuDetailNewsActivity activity) {
+    public ZhihuDetailNewsPresenter(IZhihuDetailNewsActivity activity) {
         mZhihuDetailNewsActivity = activity;
     }
 
@@ -41,12 +42,12 @@ public class ZhihuDetailNewsPresenter implements IZhihuDetailNewsPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        mZhihuDetailNewsActivity.showError(e.toString());
                     }
 
                     @Override
                     public void onNext(ZhihuDetailNews zhihuDetailNews) {
-                        mZhihuDetailNewsActivity.showZhihuDetailNews(zhihuDetailNews.getShareUrl());
+                        mZhihuDetailNewsActivity.showZhihuDetailNews(zhihuDetailNews);
                     }
                 });
     }

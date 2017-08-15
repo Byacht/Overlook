@@ -18,6 +18,16 @@ public class ZhihuDetailNews {
     @SerializedName("css")
     private String[] css;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    private String id;
+
     public String getBody() {
         return body;
     }

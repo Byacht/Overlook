@@ -5,14 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.byacht.overlook.R;
 import com.byacht.overlook.douyutv.entity.TvGame;
-import com.byacht.overlook.douyutv.entity.TvRoom;
 import com.byacht.overlook.douyutv.entity.TvView;
 import com.byacht.overlook.douyutv.ui.DouyuTvView;
 

@@ -3,14 +3,17 @@
               android:id="@+id/ll_zhihu_daily_item"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="horizontal">
+              android:background="@drawable/item_press"
+              android:orientation="horizontal"
+              android:elevation="4dp">
 
     <ImageView
         android:id="@+id/img_zhihu_daily"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="2"
-        android:layout_margin="@dimen/padding_medium"/>
+        android:layout_margin="@dimen/padding_medium"
+        android:transitionName="zhihu"/>
 
     <TextView
         android:id="@+id/tv_zhihu_daily"

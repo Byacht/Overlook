@@ -28,8 +28,7 @@
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
             android:textSize="@dimen/text_medium"
-            android:layout_toRightOf="@id/img_game"
-            android:text="王者荣耀"/>
+            android:layout_toRightOf="@id/img_game"/>
 
         <TextView
             android:id="@+id/tv_get_more"

@@ -9,37 +9,21 @@ import java.util.Date;
  */
 
 public class Meizhi {
-    public String objectId;
+    public String _id;
     public String url;
     public String type;
     public String desc;
     public String who;
     public boolean used;
     public Date createdAt;
-    public Date updatedAt;
+    public Date publishedAt;
 
-    public int getImageHeight() {
-        return imageHeight;
+    public String get_Id() {
+        return _id;
     }
 
-    public void setImageHeight(int imageHeight) {
-        this.imageHeight = imageHeight;
-    }
-
-    public int getImageWidth() {
-        return imageWidth;
-    }
-
-    public void setImageWidth(int imageWidth) {
-        this.imageWidth = imageWidth;
-    }
-
-    public String getObjectId() {
-        return objectId;
-    }
-
-    public void setObjectId(String objectId) {
-        this.objectId = objectId;
+    public void set_Id(String id) {
+        this._id = id;
     }
 
     public String getUrl() {
@@ -90,14 +74,6 @@ public class Meizhi {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     public Date getPublishedAt() {
         return publishedAt;
     }
@@ -105,9 +81,5 @@ public class Meizhi {
     public void setPublishedAt(Date publishedAt) {
         this.publishedAt = publishedAt;
     }
-
-    public Date publishedAt;
-    public int imageWidth;
-    public int imageHeight;
 
 }

@@ -11,19 +11,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
-        </activity>
-        <activity android:name=".zhihu.activity.ZhihuDetailNewsActivity">
-        </activity>
-        <activity
-            android:name=".meizhi.activity.MeizhiActivity"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
-        </activity>
-        <activity android:name=".douyutv.activity.DouyuTvActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".zhihu.activity.ZhihuDetailNewsActivity">
+        </activity>
+        <activity
+            android:name=".meizhi.activity.MeizhiActivity">
+        </activity>
+        <activity android:name=".douyutv.activity.DouyuTvActivity">
         </activity>
         <activity android:name=".douyutv.activity.DouyuTvRoomActivity">
         </activity>

@@ -8,4 +8,6 @@ import com.byacht.overlook.meizhi.entity.Meizhis;
 
 public interface IMeizhiFragment {
     void showMeizhis(Meizhis meizhis);
+
+    void showError(String error);
 }

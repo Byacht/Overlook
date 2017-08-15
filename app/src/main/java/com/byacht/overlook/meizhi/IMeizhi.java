@@ -14,9 +14,6 @@ import rx.Observable;
 
 public interface IMeizhi {
 
-    @GET("/api/data/福利/10/{page}")
-    Call<Meizhis> getMeiZhi(@Path("page") int page);
-
     @HTTP(method = "GET", path = "/api/data/福利/10/{page}", hasBody = false)
     Observable<Meizhis> getMeizhis(@Path("page") int page);
 }

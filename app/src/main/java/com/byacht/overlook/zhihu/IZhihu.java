@@ -2,6 +2,7 @@ package com.byacht.overlook.zhihu;
 
 import com.byacht.overlook.zhihu.entity.ZhihuDailies;
 import com.byacht.overlook.zhihu.entity.ZhihuDetailNews;
+import com.byacht.overlook.zhihu.entity.ZhihuHots;
 
 import retrofit2.http.GET;
 import retrofit2.http.HTTP;
@@ -18,4 +19,7 @@ public interface IZhihu {
 
     @GET("/api/4/news/{id}")
     Observable<ZhihuDetailNews> getZhihuDetailNews(@Path("id") String id);
+
+    @GET("/api/4/news/hot")
+    Observable<ZhihuHots> getZhihuHot();
 }

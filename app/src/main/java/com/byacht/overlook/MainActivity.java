@@ -1,5 +1,6 @@
 package com.byacht.overlook;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,8 +13,10 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.Window;
 
 import com.byacht.overlook.adapter.MyFragmentPagerAdapter;
+import com.byacht.overlook.douyutv.activity.DouyuTvActivity;
 import com.byacht.overlook.meizhi.fragment.MeizhiFragment;
 import com.byacht.overlook.util.MyUtils;
 import com.byacht.overlook.zhihu.fragment.ZhihuFragment;
@@ -70,7 +73,8 @@ public class MainActivity extends AppCompatActivity {
                 item.setChecked(true);
                 switch (item.getItemId()) {
                     case R.id.douyu_tv_menu:
-                        MyUtils.Toast(MainActivity.this, "click");
+                        Intent intent = new Intent(MainActivity.this, DouyuTvActivity.class);
+                        startActivity(intent);
                         break;
                     case R.id.setting_menu:
                         break;

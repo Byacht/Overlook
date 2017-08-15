@@ -1,6 +1,8 @@
 package com.byacht.overlook.util;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
+import android.view.View;
 import android.widget.Toast;
 
 /**
@@ -10,5 +12,11 @@ import android.widget.Toast;
 public class MyUtils {
     public static void Toast(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void Snackbar(View view, String message, String actionMessage, View.OnClickListener listener) {
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                .setAction(actionMessage, listener)
+                .show();
     }
 }

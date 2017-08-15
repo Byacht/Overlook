@@ -10,4 +10,6 @@ import java.util.ArrayList;
 
 public interface IZhihuPresenter {
     void getZhihuDailies();
+
+    void getZhihuHot();
 }
