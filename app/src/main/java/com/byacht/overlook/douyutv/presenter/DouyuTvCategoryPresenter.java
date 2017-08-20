@@ -2,6 +2,7 @@ package com.byacht.overlook.douyutv.presenter;
 
 import android.util.Log;
 
+import com.byacht.overlook.ApiManager;
 import com.byacht.overlook.douyutv.IDouyuTv;
 import com.byacht.overlook.douyutv.activity.DouyuTvActivity;
 import com.byacht.overlook.douyutv.entity.TvCategory;
@@ -25,12 +26,7 @@ public class DouyuTvCategoryPresenter implements IDouyuTvCategoryPresenter {
     }
     @Override
     public void getTvCategory() {
-        IDouyuTv douyuTv = new Retrofit.Builder()
-                .baseUrl("http://open.douyucdn.cn")
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(IDouyuTv.class);
+        IDouyuTv douyuTv = ApiManager.getInstance().getIDouyuTv();
         douyuTv.getTvGames()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

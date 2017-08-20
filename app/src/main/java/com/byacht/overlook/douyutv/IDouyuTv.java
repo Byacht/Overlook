@@ -17,9 +17,7 @@ public interface IDouyuTv {
     @GET("/api/RoomApi/game")
     Observable<TvCategory> getTvGames();
 
-//    @GET("/api/RoomApi/live/{name}")
-//    Observable<TvRooms> getRooms(@Path("name") String gameName);
-
     @GET("/api/RoomApi/live/{name}")
-    Call<TvRooms> getRooms(@Path("name") String gameName);
+    Observable<TvRooms> getRooms(@Path("name") String gameName);
+
 }

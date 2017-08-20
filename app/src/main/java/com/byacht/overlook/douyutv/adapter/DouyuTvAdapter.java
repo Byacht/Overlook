@@ -1,6 +1,7 @@
 package com.byacht.overlook.douyutv.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.byacht.overlook.R;
+import com.byacht.overlook.douyutv.activity.DouyuTvRoomActivity;
 import com.byacht.overlook.douyutv.entity.TvRoom;
 
 import java.util.ArrayList;
@@ -39,7 +41,7 @@ public class DouyuTvAdapter extends RecyclerView.Adapter<DouyuTvAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        TvRoom tvRoom = mTvRooms.get(position);
+        final TvRoom tvRoom = mTvRooms.get(position);
         Glide.with(mContext)
                 .load(tvRoom.getRoom_src())
                 .override(320, 180)
@@ -47,6 +49,14 @@ public class DouyuTvAdapter extends RecyclerView.Adapter<DouyuTvAdapter.MyViewHo
                 .into(holder.mImgDouyuTvRoom);
         holder.mTvDouyuTvOnline.setText(tvRoom.getOnline() + "");
         holder.mTvRoomName.setText(tvRoom.getRoom_name());
+        holder.mImgDouyuTvRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, DouyuTvRoomActivity.class);
+                intent.putExtra("roomId", tvRoom.getRoom_id());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override

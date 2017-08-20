@@ -1,11 +1,13 @@
 package com.byacht.overlook.douyutv.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.byacht.overlook.R;
+import com.byacht.overlook.douyutv.activity.DouyuTvRoomActivity;
 import com.byacht.overlook.douyutv.entity.TvGame;
 import com.byacht.overlook.douyutv.entity.TvView;
 import com.byacht.overlook.douyutv.ui.DouyuTvView;
@@ -35,9 +37,9 @@ public class DouyuTvAllGamesAdapter extends RecyclerView.Adapter<DouyuTvAllGames
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
 
-        TvGame tvGame = mTvViews.get(position).getTvGame();
+        final TvGame tvGame = mTvViews.get(position).getTvGame();
         holder.douyuTvView.setGameIcon(tvGame.getGame_icon());
         holder.douyuTvView.setTvGameName(tvGame.getGame_name());
         holder.douyuTvView.setRvDouyuRoom(mTvViews.get(position).getTvRooms());

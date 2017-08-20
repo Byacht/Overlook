@@ -2,6 +2,7 @@ package com.byacht.overlook.douyutv.presenter;
 
 import android.util.Log;
 
+import com.byacht.overlook.ApiManager;
 import com.byacht.overlook.douyutv.IDouyuTv;
 import com.byacht.overlook.douyutv.activity.DouyuTvActivity;
 import com.byacht.overlook.douyutv.activity.IDouyuTvActivity;
@@ -30,24 +31,24 @@ public class DouyuTvRoomPresenter implements IDouyuTvRoomPresenter {
     }
     @Override
     public void getTvRooms(String gameName) {
-        IDouyuTv douyuTv = new Retrofit.Builder()
-                .baseUrl("http://open.douyucdn.cn")
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(IDouyuTv.class);
+        IDouyuTv douyuTv = ApiManager.getInstance().getIDouyuTv();
         douyuTv.getRooms(gameName)
-                .enqueue(new Callback<TvRooms>() {
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<TvRooms>() {
                     @Override
-                    public void onResponse(Call<TvRooms> call, Response<TvRooms> response) {
-                        TvRooms tvRooms = response.body();
-                        Log.d("htout", tvRooms.toString());
-                        mDouyuTvActivity.showRooms(tvRooms);
+                    public void onCompleted() {
+
                     }
 
                     @Override
-                    public void onFailure(Call<TvRooms> call, Throwable t) {
-                        Log.d("htout", "error:" + t.toString());
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(TvRooms tvRooms) {
+                        mDouyuTvActivity.showRooms(tvRooms);
                     }
                 });
     }

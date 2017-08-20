@@ -6,7 +6,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -30,6 +32,8 @@ public class DouyuTvActivity extends AppCompatActivity implements IDouyuTvActivi
 
     @BindView(R.id.rv_douyu_tv_all_games)
     RecyclerView mRvDouyuTv;
+    @BindView(R.id.pgb_douyu_tv)
+    ProgressBar mProgressBar;
 
     private DouyuTvCategoryPresenter mDouyuTvPresenter;
     private DouyuTvRoomPresenter mDouyuTvRoomPresenter;
@@ -46,6 +50,7 @@ public class DouyuTvActivity extends AppCompatActivity implements IDouyuTvActivi
         setContentView(R.layout.activity_douyu_tv);
         ButterKnife.bind(this);
 
+        mProgressBar.setVisibility(View.VISIBLE);
         mTvViews = new ArrayList<TvView>();
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRvDouyuTv.setLayoutManager(layoutManager);
@@ -68,6 +73,8 @@ public class DouyuTvActivity extends AppCompatActivity implements IDouyuTvActivi
 
     @Override
     public void showRooms(TvRooms tvRooms) {
+        Log.d("htout", "succeed!");
+        hideProgressBar();
         ArrayList<TvRoom> newTvRooms = new ArrayList<TvRoom>();
         if (tvRooms.getTvRooms().size() >= 4){
             for (int i = 0; i < 4; i++) {
@@ -89,5 +96,9 @@ public class DouyuTvActivity extends AppCompatActivity implements IDouyuTvActivi
             }
         }
 
+    }
+
+    private void hideProgressBar() {
+        mProgressBar.setVisibility(View.GONE);
     }
 }
