@@ -23,6 +23,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
+        <com.byacht.overlook.douyutv.MediaControllerView
+            android:id="@+id/media_controller_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="50dp"
+            android:visibility="gone"/>
+
+
         <ProgressBar
             android:id="@+id/pb_douyu_live"
             style="?android:attr/progressBarStyleLarge"
@@ -66,7 +74,7 @@
             android:background="@drawable/pause"/>
 
         <LinearLayout
-            android:id="@+id/ll_danmu_view"
+            android:id="@+id/ll_control_box"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"
@@ -74,10 +82,10 @@
             android:background="#90000000"
             android:visibility="gone">
             <EditText
-                android:id="@+id/et_danmu_view"
+                android:id="@+id/et_danmu_full_screen"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="5"
+                android:layout_weight="6"
                 android:gravity="center_vertical"
                 android:background="@drawable/et_bg"
                 android:textColor="@android:color/black"
@@ -85,7 +93,7 @@
                 android:layout_margin="5dp"/>
 
             <Button
-                android:id="@+id/btn_send_danmu_view"
+                android:id="@+id/btn_send_danmu_full_screen"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -96,7 +104,22 @@
                 android:text="发送"
                 android:textSize="@dimen/text_medium"/>
 
+            <Button
+                android:id="@+id/btn_pause_full_screen"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/pause"/>
+
+            <Button
+                android:id="@+id/btn_quit_full_screen"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/quit_full_screen"/>
+
         </LinearLayout>
+
     </RelativeLayout>
 
     <TextView

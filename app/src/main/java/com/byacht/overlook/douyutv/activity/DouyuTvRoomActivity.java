@@ -4,26 +4,23 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.byacht.overlook.R;
+import com.byacht.overlook.douyutv.MediaControllerView;
+import com.byacht.overlook.douyutv.TimeThread;
 import com.byacht.overlook.util.DensityUtil;
 import com.byacht.overlook.util.ScreenUtil;
 
@@ -69,66 +66,91 @@ public class DouyuTvRoomActivity extends AppCompatActivity {
     Button mBtnPause;
     @BindView(R.id.danmu_view)
     DanmakuView mDanmaView;
-    @BindView(R.id.et_danmu_view)
-    EditText mEtDanmuView;
-    @BindView(R.id.btn_send_danmu_view)
-    Button mBtnSendDanmuView;
-    @BindView(R.id.ll_danmu_view)
-    LinearLayout mLlDanmuView;
+    @BindView(R.id.media_controller_view)
+    MediaControllerView mControllerView;
+
+    @BindView(R.id.ll_control_box)
+    LinearLayout mLlController;
+    @BindView(R.id.et_danmu_full_screen)
+    EditText mEtDanmuFull;
+    @BindView(R.id.btn_send_danmu_full_screen)
+    Button mBtnSendDanmuFull;
+    @BindView(R.id.btn_pause_full_screen)
+    Button mBtnPauseFull;
+    @BindView(R.id.btn_quit_full_screen)
+    Button mBtnQuitFullScreen;
 
     private DanmakuContext mDanmakuContext;
 
     private boolean isShow = true;
     private boolean isCrossScreen = false;
 
+    private TimeThread mTimeThread;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //检查vitamio框架是否可用
         if (!LibsChecker.checkVitamioLibs(this)) {
-            Log.d("htout", "cannot use");
             return;
         }
+        //全屏显示，隐藏状态栏
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_douyu_tv_room);
         ButterKnife.bind(this);
-
-//        String roomId = getIntent().getStringExtra("roomId");
 
         // vitamio 初始化成功，返回 true
         if (Vitamio.initialize(this)) {
             String url = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
             mVideoView.setVideoURI(Uri.parse(url));
-            mVideoView.setBufferSize(1024 * 500);
-//            MediaController controller = new MediaController(this);
-//            mVideoView.setMediaController(controller);
+            //缓存大小，单位 byte
+            mVideoView.setBufferSize(1024 * 200);
             mVideoView.start();
             setupVideoViewListener();
-
-            mBtnFullScreen.getBackground().setAlpha(150);
-            mBtnPause.getBackground().setAlpha(150);
         }
 
         initDanmaView();
-        mBtnSendDanmuView.setOnClickListener(new View.OnClickListener() {
+        //设置按钮透明度
+        mBtnFullScreen.getBackground().setAlpha(150);
+        mBtnPause.getBackground().setAlpha(150);
+
+        mControllerView.setLlController(mLlController);
+        mControllerView.setActivity(this);
+
+        mTimeThread = new TimeThread(8 * 1000, mHandler);
+        mTimeThread.start();
+
+    }
+
+    //初始化弹幕view
+    private void initDanmaView() {
+        mDanmaView.enableDanmakuDrawingCache(true);
+        mDanmaView.setCallback(new DrawHandler.Callback() {
             @Override
-            public void onClick(View v) {
-                String danmu = mEtDanmuView.getText().toString();
-                if (danmu != null) {
-                    addDanmaku(danmu, false);
-                    mEtDanmuView.setText("");
-                }
+            public void prepared() {
+                mDanmaView.start();
+            }
+
+            @Override
+            public void updateTimer(DanmakuTimer timer) {
+
+            }
+
+            @Override
+            public void danmakuShown(BaseDanmaku danmaku) {
+
+            }
+
+            @Override
+            public void drawingFinished() {
+
             }
         });
-
+        mDanmakuContext = DanmakuContext.create();
+        mDanmaView.prepare(mParser, mDanmakuContext);
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-//        hideStatuBar();
-    }
-
+    //全屏按钮
     @OnClick(R.id.btn_full_screen)
     public void turnToFullScreen() {
         if (isCrossScreen) {
@@ -138,6 +160,7 @@ public class DouyuTvRoomActivity extends AppCompatActivity {
         }
     }
 
+    //暂停按钮
     @OnClick(R.id.btn_pause_button)
     public void pauseOrStartVideo() {
         if (mVideoView.isPlaying()) {
@@ -150,26 +173,84 @@ public class DouyuTvRoomActivity extends AppCompatActivity {
         mBtnPause.getBackground().setAlpha(150);
     }
 
+    //发送弹幕
+    @OnClick(R.id.btn_send_danmu_full_screen)
+    public void sendDanmu() {
+        String danmu = mEtDanmuFull.getText().toString();
+        if (danmu != null) {
+            addDanmaku(danmu, false);
+            mEtDanmuFull.setText("");
+        }
+    }
+
+    @OnClick(R.id.btn_quit_full_screen)
+    public void quitFullScreen() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
+    @OnClick(R.id.btn_pause_full_screen)
+    public void pauseOrStartVideoFull() {
+        if (mVideoView.isPlaying()) {
+            mBtnPause.setBackgroundResource(R.drawable.start);
+            mVideoView.pause();
+        } else {
+            mBtnPause.setBackgroundResource(R.drawable.pause);
+            mVideoView.start();
+        }
+    }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        Log.d("htout", "configchange");
         int width = ScreenUtil.getScreenWidth(this);
         int height = ScreenUtil.getScreenHeight(this);
         //是否为横屏
         isCrossScreen = width < height ? false : true;
         if (isCrossScreen) {
-            hideDanmu();
+            //隐藏部分控件
+            setVisibility(true);
+            //设置 videoView 宽高
             setVideoSize(true);
-            mLlDanmuView.setVisibility(View.VISIBLE);
-            mBtnFullScreen.setBackgroundResource(R.drawable.quit_full_screen);
         } else {
-            showDanmu();
+            setVisibility(false);
             setVideoSize(false);
-            mLlDanmuView.setVisibility(View.GONE);
-            mBtnFullScreen.setBackgroundResource(R.drawable.full_screen);
         }
-        mBtnFullScreen.getBackground().setAlpha(150);
         super.onConfigurationChanged(newConfig);
+    }
+
+    private void setVisibility(boolean isCrossScreen) {
+        if (isCrossScreen) {
+            mControllerView.setVisibility(View.VISIBLE);
+            mLlController.setVisibility(View.VISIBLE);
+            mTvDanmu.setVisibility(View.GONE);
+            mLlSendDanmu.setVisibility(View.GONE);
+            mBtnFullScreen.setVisibility(View.GONE);
+            mBtnPause.setVisibility(View.GONE);
+        } else {
+            mControllerView.setVisibility(View.GONE);
+            mLlController.setVisibility(View.GONE);
+            mTvDanmu.setVisibility(View.VISIBLE);
+            mLlSendDanmu.setVisibility(View.VISIBLE);
+            mBtnFullScreen.setVisibility(View.VISIBLE);
+            mBtnPause.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setVideoSize(boolean isFullScreen) {
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mRlVideo.getLayoutParams();
+        RelativeLayout.LayoutParams videoLayoutParams = (RelativeLayout.LayoutParams) mVideoView.getLayoutParams();
+        if (isFullScreen) {
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            videoLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            videoLayoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        } else {
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            layoutParams.height = DensityUtil.dp2px(this, 200);
+            videoLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            videoLayoutParams.height = DensityUtil.dp2px(this, 200);
+        }
+        mRlVideo.setLayoutParams(layoutParams);
+        mVideoView.setLayoutParams(videoLayoutParams);
     }
 
     private void setupVideoViewListener() {
@@ -213,36 +294,16 @@ public class DouyuTvRoomActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isShow) {
-                    if (isCrossScreen) {
-                        mBtnFullScreen.setVisibility(View.GONE);
-                        mBtnPause.setVisibility(View.GONE);
-                        mLlDanmuView.setVisibility(View.GONE);
-                    } else {
-                        mBtnFullScreen.setVisibility(View.GONE);
-                        mBtnPause.setVisibility(View.GONE);
-                    }
+                    mBtnFullScreen.setVisibility(View.GONE);
+                    mBtnPause.setVisibility(View.GONE);
                     isShow = false;
                 } else {
-                    if (isCrossScreen) {
+                    if (!isCrossScreen) {
                         mBtnFullScreen.setVisibility(View.VISIBLE);
                         mBtnPause.setVisibility(View.VISIBLE);
-                        mLlDanmuView.setVisibility(View.VISIBLE);
-                    } else {
-                        mBtnFullScreen.setVisibility(View.VISIBLE);
-                        mBtnPause.setVisibility(View.VISIBLE);
+                        isShow = true;
                     }
-                    isShow = true;
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(10000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            mHandler.sendEmptyMessage(0);
-                        }
-                    }).start();
+                    mTimeThread.setStartTime(System.currentTimeMillis());
                 }
             }
         });
@@ -251,48 +312,15 @@ public class DouyuTvRoomActivity extends AppCompatActivity {
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            if (isCrossScreen) {
-                mBtnFullScreen.setVisibility(View.GONE);
-                mBtnPause.setVisibility(View.GONE);
-                mLlDanmuView.setVisibility(View.GONE);
-            } else {
-                mBtnFullScreen.setVisibility(View.GONE);
-                mBtnPause.setVisibility(View.GONE);
-            }
+            mBtnFullScreen.setVisibility(View.GONE);
+            mBtnPause.setVisibility(View.GONE);
             isShow = false;
             super.handleMessage(msg);
         }
     };
 
-    private void initDanmaView() {
-        mDanmaView.enableDanmakuDrawingCache(true);
-        mDanmaView.setCallback(new DrawHandler.Callback() {
-            @Override
-            public void prepared() {
-                mDanmaView.start();
-            }
-
-            @Override
-            public void updateTimer(DanmakuTimer timer) {
-
-            }
-
-            @Override
-            public void danmakuShown(BaseDanmaku danmaku) {
-
-            }
-
-            @Override
-            public void drawingFinished() {
-
-            }
-        });
-        mDanmakuContext = DanmakuContext.create();
-        mDanmaView.prepare(mParser, mDanmakuContext);
-    }
-
     //添加弹幕
-    private void addDanmaku(String content, boolean withBorder) {
+    public void addDanmaku(String content, boolean withBorder) {
         BaseDanmaku danmaku = mDanmakuContext.mDanmakuFactory.createDanmaku(BaseDanmaku.TYPE_SCROLL_RL);
         danmaku.text = content;
         danmaku.padding = 5;
@@ -311,53 +339,6 @@ public class DouyuTvRoomActivity extends AppCompatActivity {
             return new Danmakus();
         }
     };
-
-    private void setVideoSize(boolean isFullScreen) {
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mRlVideo.getLayoutParams();
-        RelativeLayout.LayoutParams videoLayoutParams = (RelativeLayout.LayoutParams) mVideoView.getLayoutParams();
-        if (isFullScreen) {
-            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            videoLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            videoLayoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        } else {
-            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            layoutParams.height = DensityUtil.dp2px(this, 200);
-            videoLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            videoLayoutParams.height = DensityUtil.dp2px(this, 200);
-        }
-        mRlVideo.setLayoutParams(layoutParams);
-        mVideoView.setLayoutParams(videoLayoutParams);
-    }
-
-    private void hideStatuBar() {
-        if (Build.VERSION.SDK_INT >= 19) {
-            View decorView = getWindow().getDecorView();
-            decorView.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
-
-    }
-
-    private void showStatuBar() {
-        View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-    }
-
-    private void hideDanmu() {
-        mTvDanmu.setVisibility(View.GONE);
-        mLlSendDanmu.setVisibility(View.GONE);
-    }
-
-    private void showDanmu() {
-        mTvDanmu.setVisibility(View.VISIBLE);
-        mLlSendDanmu.setVisibility(View.VISIBLE);
-    }
 
     @Override
     public void onBackPressed() {
@@ -396,4 +377,5 @@ public class DouyuTvRoomActivity extends AppCompatActivity {
             mDanmaView = null;
         }
     }
+
 }
