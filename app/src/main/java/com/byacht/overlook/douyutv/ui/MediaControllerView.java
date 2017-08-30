@@ -1,10 +1,8 @@
-package com.byacht.overlook.douyutv;
+package com.byacht.overlook.douyutv.ui;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
-import android.media.audiofx.BassBoost;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
@@ -15,48 +13,58 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 
 import com.byacht.overlook.R;
-import com.byacht.overlook.douyutv.activity.DouyuTvActivity;
-import com.byacht.overlook.douyutv.activity.DouyuTvRoomActivity;
+import com.byacht.overlook.douyutv.TimeThread;
 import com.byacht.overlook.util.ScreenUtil;
-
-import io.vov.vitamio.widget.MediaController;
-import io.vov.vitamio.widget.VideoView;
 
 /**
  * Created by dn on 2017/8/22.
  */
 
-public class MediaControllerView extends FrameLayout {
+public class MediaControllerView extends RelativeLayout {
 
     private Context mContext;
     private GestureDetector mGestureDetector;
     private AudioManager mAudioManager;
     private int mScreenWidth;
     private int mScreenHeight;
-    private int mMaxVolume;
-    private int mCurrentVolume;
+    private float mMaxVolume;
+    private float mCurrentVolume;
     private int mCurrentBrightness;
+    //底部控制条是否显示
     private boolean isShow = true;
     private TimeThread mTimeThread;
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            mLlController.setVisibility(GONE);
+            isShow = false;
+            mSeekBar.setVisibility(GONE);
+            mLlAdjust.setVisibility(GONE);
+            super.handleMessage(msg);
+        }
+    };
+
+    private LinearLayout mLlAdjust;
+    private ImageView mImgAdjust;
+    private SeekBar mSeekBar;
+
+    private LinearLayout mLlController;
+    private Activity mActivity;
 
     public void setLlController(LinearLayout llController) {
         mLlController = llController;
     }
 
-    private LinearLayout mLlController;
-
     public void setActivity(Activity activity) {
         mActivity = activity;
     }
-
-    private Activity mActivity;
 
     public MediaControllerView(Context context) {
         this(context, null, 0);
@@ -69,6 +77,10 @@ public class MediaControllerView extends FrameLayout {
     public MediaControllerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
+        View view = LayoutInflater.from(context).inflate(R.layout.mediacontroller, this);
+        mLlAdjust = (LinearLayout) view.findViewById(R.id.ll_adjust_bg);
+        mImgAdjust = (ImageView) view.findViewById(R.id.img_adjust);
+        mSeekBar = (SeekBar) view.findViewById(R.id.seekbar);
         mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         mMaxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         mCurrentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -134,40 +146,50 @@ public class MediaControllerView extends FrameLayout {
     }
 
     private void changeVolume(float percent) {
-        mCurrentVolume += mMaxVolume * percent;
+        mCurrentVolume += (mMaxVolume * percent);
         if (mCurrentVolume > mMaxVolume) {
             mCurrentVolume = mMaxVolume;
         } else if (mCurrentVolume < 0) {
             mCurrentVolume = 0;
         }
-        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mCurrentVolume, 0);
+        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, (int) mCurrentVolume, 0);
+        mLlAdjust.setVisibility(VISIBLE);
+        mImgAdjust.setImageResource(R.drawable.volume);
+        mSeekBar.setVisibility(VISIBLE);
+        mSeekBar.setProgress((int)((mCurrentVolume / mMaxVolume) * 100));
+
     }
 
     private void changeBrightness(float percent) {
-        try {
-            mCurrentBrightness = Settings.System.getInt(mActivity.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
+        if (mCurrentBrightness == 0){
+            try {
+                mCurrentBrightness = Settings.System.getInt(mActivity.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            mCurrentBrightness = (int) (mCurrentBrightness + percent * 255);
+            if (mCurrentBrightness <= 0){
+                mCurrentBrightness = 1;
+            } else if (mCurrentBrightness > 255){
+                mCurrentBrightness = 255;
+            }
         }
         WindowManager.LayoutParams lpa = mActivity.getWindow().getAttributes();
-        lpa.screenBrightness = mCurrentBrightness / 255 + percent;
+        lpa.screenBrightness = (float)mCurrentBrightness / 255;
         if (lpa.screenBrightness > 1.0f) {
             lpa.screenBrightness = 1.0f;
         } else if (lpa.screenBrightness < 0.01f) {
             lpa.screenBrightness = 0.01f;
         }
-        //变更亮度
         mActivity.getWindow().setAttributes(lpa);
+
+        mLlAdjust.setVisibility(VISIBLE);
+        mImgAdjust.setImageResource(R.drawable.brightness);
+        mSeekBar.setVisibility(VISIBLE);
+        Log.d("htout", "bright:" + mCurrentBrightness);
+        mSeekBar.setProgress((int)((float)mCurrentBrightness / 255 * 100));
+        Log.d("htout", "bright/255:" + (float)mCurrentBrightness / 255);
     }
 
-
-
-    private Handler mHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            mLlController.setVisibility(GONE);
-            isShow = false;
-            super.handleMessage(msg);
-        }
-    };
 }
