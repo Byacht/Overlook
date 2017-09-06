@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
             android:transitionName="zhihu"
+
             app:collapsedTitleGravity="center_vertical"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
