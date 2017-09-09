@@ -53,12 +53,16 @@ public class DouyuTvMoreActivity extends AppCompatActivity implements IDouyuTvAc
 
     @Override
     public void showAllCategories(TvCategory tvCategory) {
-
     }
 
     @Override
     public void showRooms(TvRooms tvRooms) {
         mDouyuTvAdapter = new DouyuTvAdapter(this, tvRooms.getTvRooms());
         mRvDouyuTv.setAdapter(mDouyuTvAdapter);
+    }
+
+    @Override
+    public void show() {
+
     }
 }

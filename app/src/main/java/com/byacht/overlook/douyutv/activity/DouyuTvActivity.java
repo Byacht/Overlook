@@ -24,9 +24,12 @@ import com.byacht.overlook.douyutv.presenter.DouyuTvCategoryPresenter;
 import com.byacht.overlook.douyutv.presenter.DouyuTvRoomPresenter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.Subscriber;
 
 public class DouyuTvActivity extends AppCompatActivity implements IDouyuTvActivity {
 
@@ -44,6 +47,8 @@ public class DouyuTvActivity extends AppCompatActivity implements IDouyuTvActivi
     private ArrayList<TvGame> mTvGames;
     private ArrayList<TvView> mTvViews;
 
+    private List<List<TvRoom>> mTvRoomsList = new ArrayList<List<TvRoom>>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +59,8 @@ public class DouyuTvActivity extends AppCompatActivity implements IDouyuTvActivi
         mTvViews = new ArrayList<TvView>();
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRvDouyuTv.setLayoutManager(layoutManager);
+        mAdapter = new DouyuTvAllGamesAdapter(this, mTvViews);
+        mRvDouyuTv.setAdapter(mAdapter);
 
         mDouyuTvPresenter = new DouyuTvCategoryPresenter(this);
         mDouyuTvRoomPresenter = new DouyuTvRoomPresenter(this);
@@ -64,17 +71,16 @@ public class DouyuTvActivity extends AppCompatActivity implements IDouyuTvActivi
     public void showAllCategories(TvCategory tvCategory) {
         Log.d("htout", tvCategory.toString());
         mTvGames = tvCategory.getTvGames();
+        mDouyuTvRoomPresenter.setActualSize(0);
+        mDouyuTvRoomPresenter.setCategorySize(mTvGames.size());
         for (int i = 0; i < mTvGames.size(); i++) {
             mDouyuTvRoomPresenter.getTvRooms(mTvGames.get(i).getShort_name());
         }
-        mAdapter = new DouyuTvAllGamesAdapter(this, mTvViews);
-        mRvDouyuTv.setAdapter(mAdapter);
+
     }
 
     @Override
     public void showRooms(TvRooms tvRooms) {
-        Log.d("htout", "succeed!");
-        hideProgressBar();
         ArrayList<TvRoom> newTvRooms = new ArrayList<TvRoom>();
         if (tvRooms.getTvRooms().size() >= 4){
             for (int i = 0; i < 4; i++) {
@@ -86,16 +92,26 @@ public class DouyuTvActivity extends AppCompatActivity implements IDouyuTvActivi
             }
         }
         if (newTvRooms.size() > 0) {
-            for (int i = 0; i < mTvGames.size(); i++) {
-                if (newTvRooms.get(0).getGame_name().equals(mTvGames.get(i).getGame_name())){
+            mTvRoomsList.add(newTvRooms);
+        }
+
+    }
+
+    @Override
+    public void show() {
+        for(int i = 0; i < mTvGames.size(); i++) {
+            for (int j = 0; j < mTvRoomsList.size(); j++) {
+                if (mTvRoomsList.get(j).get(0).getGame_name().equals(mTvGames.get(i).getGame_name())){
                     TvView tvView = new TvView();
                     tvView.setTvGame(mTvGames.get(i));
-                    tvView.setTvRooms(newTvRooms);
+                    tvView.setTvRooms((ArrayList<TvRoom>) mTvRoomsList.get(j));
                     mTvViews.add(tvView);
+                    break;
                 }
             }
         }
-
+        mAdapter.notifyDataSetChanged();
+        hideProgressBar();
     }
 
     private void hideProgressBar() {

@@ -11,4 +11,6 @@ public interface IDouyuTvActivity {
     void showAllCategories(TvCategory tvCategory);
 
     void showRooms(TvRooms tvRooms);
+
+    void show();
 }

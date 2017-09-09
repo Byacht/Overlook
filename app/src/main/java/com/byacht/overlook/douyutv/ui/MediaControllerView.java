@@ -66,6 +66,10 @@ public class MediaControllerView extends RelativeLayout {
         mActivity = activity;
     }
 
+    public TimeThread getTimeThread() {
+        return mTimeThread;
+    }
+
     public MediaControllerView(Context context) {
         this(context, null, 0);
     }

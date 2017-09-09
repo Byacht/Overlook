@@ -1,17 +1,22 @@
 package com.byacht.overlook.douyutv.presenter;
 
+import android.database.Observable;
 import android.util.Log;
 
 import com.byacht.overlook.ApiManager;
 import com.byacht.overlook.douyutv.IDouyuTv;
 import com.byacht.overlook.douyutv.activity.DouyuTvActivity;
 import com.byacht.overlook.douyutv.entity.TvCategory;
+import com.byacht.overlook.douyutv.entity.TvRooms;
+
+import java.util.List;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -46,5 +51,6 @@ public class DouyuTvCategoryPresenter implements IDouyuTvCategoryPresenter {
                         mDouyuTvActivity.showAllCategories(tvCategory);
                     }
                 });
+
     }
 }

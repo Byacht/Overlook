@@ -27,6 +27,7 @@ import com.byacht.overlook.util.ScreenUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.Vitamio;
@@ -306,6 +307,13 @@ public class DouyuTvRoomActivity extends AppCompatActivity {
         mDanmaView.addDanmaku(danmaku);
     }
 
+    @OnTouch(R.id.et_danmu_full_screen)
+    public boolean inputDanmu() {
+        //输入弹幕期间停止计时，不隐藏 controllerView
+        mControllerView.getTimeThread().setIsTiming(false);
+        return false;
+    }
+
     //全屏按钮
     @OnClick(R.id.btn_full_screen)
     public void turnToFullScreen() {
@@ -337,6 +345,9 @@ public class DouyuTvRoomActivity extends AppCompatActivity {
             addDanmaku(danmu, false);
             mEtDanmuFull.setText("");
         }
+        //发送弹幕后重新开始计时，一定时间后隐藏 controllerView
+        mControllerView.getTimeThread().setIsTiming(true);
+        mControllerView.getTimeThread().setStartTime(System.currentTimeMillis());
     }
 
     //退出全屏按钮

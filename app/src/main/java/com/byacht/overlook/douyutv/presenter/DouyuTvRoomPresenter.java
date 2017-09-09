@@ -25,6 +25,16 @@ import rx.schedulers.Schedulers;
 
 public class DouyuTvRoomPresenter implements IDouyuTvRoomPresenter {
     private IDouyuTvActivity mDouyuTvActivity;
+    private int categorySize = 0;
+    private int actualSize = 0;
+
+    public void setCategorySize(int size) {
+        categorySize = size;
+    }
+
+    public void setActualSize(int size) {
+        actualSize = size;
+    }
 
     public DouyuTvRoomPresenter(IDouyuTvActivity activity) {
         mDouyuTvActivity = activity;
@@ -38,12 +48,19 @@ public class DouyuTvRoomPresenter implements IDouyuTvRoomPresenter {
                 .subscribe(new Subscriber<TvRooms>() {
                     @Override
                     public void onCompleted() {
-
+                        actualSize++;
+                        if (actualSize == categorySize) {
+                            mDouyuTvActivity.show();
+                        }
+                        Log.d("htout", "actualSize:" + actualSize);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        actualSize++;
+                        if (actualSize == categorySize) {
+                            mDouyuTvActivity.show();
+                        }
                     }
 
                     @Override
