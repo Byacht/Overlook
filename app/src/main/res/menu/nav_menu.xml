@@ -4,13 +4,13 @@
     <group>
         <item
             android:id="@+id/douyu_tv_menu"
-            android:icon="@mipmap/ic_launcher"
+            android:icon="@drawable/tv"
             app:showAsAction="always"
             android:title="douyu_tv"
             android:checkable="true"/>
         <item
             android:id="@+id/setting_menu"
-            android:icon="@mipmap/ic_launcher"
+            android:icon="@drawable/setting"
             app:showAsAction="always"
             android:title="setting"
             android:checkable="true"/>
