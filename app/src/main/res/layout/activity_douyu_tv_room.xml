@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/windowBackground"
     tools:context="com.byacht.overlook.douyutv.activity.DouyuTvRoomActivity">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -79,7 +80,6 @@
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"
             android:orientation="horizontal"
-            android:background="#90000000"
             android:visibility="gone">
             <EditText
                 android:id="@+id/et_danmu_full_screen"

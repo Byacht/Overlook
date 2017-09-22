@@ -6,6 +6,7 @@
     android:id="@+id/activity_zhihu_detail_news"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/windowBackground"
     tools:context="com.byacht.overlook.zhihu.activity.ZhihuDetailNewsActivity">
 
     <android.support.design.widget.AppBarLayout

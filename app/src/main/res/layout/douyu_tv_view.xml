@@ -28,6 +28,7 @@
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
             android:textSize="@dimen/text_medium"
+            android:textColor="@color/textColor"
             android:layout_toRightOf="@id/img_game"/>
 
         <TextView

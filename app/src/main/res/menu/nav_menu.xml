@@ -6,13 +6,13 @@
             android:id="@+id/douyu_tv_menu"
             android:icon="@drawable/tv"
             app:showAsAction="always"
-            android:title="douyu_tv"
+            android:title="斗鱼tv"
             android:checkable="true"/>
         <item
             android:id="@+id/setting_menu"
             android:icon="@drawable/setting"
             app:showAsAction="always"
-            android:title="setting"
+            android:title="设置"
             android:checkable="true"/>
     </group>
 

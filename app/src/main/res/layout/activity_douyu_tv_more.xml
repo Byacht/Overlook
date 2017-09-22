@@ -5,6 +5,7 @@
     android:id="@+id/activity_douyu_tv_more"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/windowBackground"
     tools:context="com.byacht.overlook.douyutv.activity.DouyuTvMoreActivity">
 
     <include

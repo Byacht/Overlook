@@ -10,7 +10,8 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/windowBackground">
         <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -54,6 +55,9 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/header_layout"
+        android:background="@color/windowBackground"
+        app:itemTextColor="@color/textColor"
+        app:itemIconTint="@color/textColor"
         app:menu="@menu/nav_menu">
 
     </android.support.design.widget.NavigationView>

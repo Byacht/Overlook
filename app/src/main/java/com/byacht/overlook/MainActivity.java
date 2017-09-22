@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.Window;
 
+import com.byacht.overlook.activity.SettingActivity;
 import com.byacht.overlook.adapter.MyFragmentPagerAdapter;
 import com.byacht.overlook.douyutv.activity.DouyuTvActivity;
 import com.byacht.overlook.meizhi.fragment.MeizhiFragment;
@@ -78,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                         break;
                     case R.id.setting_menu:
+                        Intent settingIntent = new Intent(MainActivity.this, SettingActivity.class);
+                        startActivity(settingIntent);
+                        finish();
                         break;
                     default:
                         break;

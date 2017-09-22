@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -220,6 +221,7 @@ public class DouyuTvRoomActivity extends AppCompatActivity {
             layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
             videoLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
             videoLayoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            Log.d("htout", "configChange");
         } else {
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
             layoutParams.height = DensityUtil.dp2px(this, 200);
